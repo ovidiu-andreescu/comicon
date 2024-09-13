@@ -146,6 +146,10 @@ app.delete('/universes', async (req, res) => {
         if (!universe) {
             return res.status(404).json({ error: 'Universe not found' });
         }
+        const universeName = universe.name;
+
+        const characters = await Character.deleteMany({ universe: universeName });
+
         res.json({ message: 'Universe deleted successfully' });
     } catch (err) {
         console.error(err);
