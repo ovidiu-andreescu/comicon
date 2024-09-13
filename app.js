@@ -2,6 +2,7 @@ const express = require('express');
 const connectDB = require('./db');
 const Character = require('./models/Character');
 const { Universe } = require('./models/Universe');
+const { md5 } = require('./utils/hashing');
 
 connectDB();
 
@@ -62,6 +63,45 @@ app.get('/characters', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to fetch universes' });
+    }
+});
+
+app.post('/create/characters', async (req, res) => {
+    const { name, universe } = req.body;
+    try {
+        let query = {};
+        if (name) query.name = name;
+        if (universe) query.universe = universe;
+
+        // looks for a pre-existing corresponding universe
+        const existingUniverse = await Universe.find(query);
+        console.log(existingUniverse);
+
+        // if there isn't one then we create a new one
+        if (existingUniverse.length === 0){
+            console.log("nu exista");
+            const newUniverse = new Universe({
+                name: universe,
+                frequency: md5(universe)
+            });
+
+            await newUniverse.save();
+        }
+
+        const now = new Date();
+
+        const newCharacter = new Character({
+            name,
+            universe,
+            apparitions: [now]
+        });
+        
+        await newCharacter.save();
+        
+        res.status(201).json(newCharacter);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to create character' });
     }
 });
 
