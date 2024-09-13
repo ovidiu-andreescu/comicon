@@ -70,12 +70,11 @@ app.post('/create/characters', async (req, res) => {
     const { name, universe } = req.body;
     try {
         let query = {};
-        if (name) query.name = name;
-        if (universe) query.universe = universe;
+        if (universe) query.name = universe;
 
         // looks for a pre-existing corresponding universe
         const existingUniverse = await Universe.find(query);
-        console.log(existingUniverse);
+        console.log(name, universe, existingUniverse);
 
         // if there isn't one then we create a new one
         if (existingUniverse.length === 0){
