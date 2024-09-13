@@ -140,9 +140,9 @@ app.post('/characters', async (req, res) => {
 });
 
 app.delete('/universes', async (req, res) => {
-    const { name } = req.query;
+    const { id } = req.query;
     try {
-        const universe = await Universe.findOneAndDelete({ name: name });
+        const universe = await Universe.findOneAndDelete({ _id: id });
         if (!universe) {
             return res.status(404).json({ error: 'Universe not found' });
         }
@@ -154,9 +154,9 @@ app.delete('/universes', async (req, res) => {
 });
 
 app.delete('/characters', async (req, res) => {
-    const { name } = req.query;
+    const { id } = req.query;
     try {
-        const character = await Character.findOneAndDelete({ name: name });
+        const character = await Character.findOneAndDelete({ _id: id });
         if (!character) {
             return res.status(404).json({ error: 'Character not found' });
         }
